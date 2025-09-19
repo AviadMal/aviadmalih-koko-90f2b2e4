@@ -15,10 +15,14 @@ def convert_word_to_pdf(word_file, output_pdf):
     pdf = PDF()
     pdf.add_page()
     pdf.set_font('Arial', '', 12)
-    with open(word_file, 'r') as file:
-        for line in file:
-            pdf.multi_cell(0, 10, line)
-    pdf.output(output_pdf)
+try:
+    from docx import Document
+    doc = Document(word_file)
+    for paragraph in doc.paragraphs:
+        pdf.multi_cell(0, 10, paragraph.text)
+except Exception as e:
+    print(f'שגיאה בעת קריאת הקובץ: {e}')
+    return
 
 if __name__ == '__main__':
     input_word = 'example_word.txt'  # Input text file path

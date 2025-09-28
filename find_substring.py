@@ -3,28 +3,39 @@ import os
 
 def find_substring_in_file(file_path, substring):
     """
-    Checks if the given substring is present in the specified file.
+    Searches for a given substring in a specified file.
+    :param file_path: Path to the file where the search will take place.
+    :param substring: The substring to search for.
+    :return: True if substring is found, otherwise False.
     """
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
             content = file.read()
-            if substring in content:
-                print(f'Substring found in file: {file_path}')
+            return substring in content
     except Exception as e:
-        print(f'Error reading {file_path}: {e}')
+        print(f"Error reading {file_path}: {e}")
+        return False
 
 
-def search_directory_for_substring(directory_path, substring):
+def search_directory_for_substring(directory, substring):
     """
-    Recursively searches through the directory for files containing the substring.
+    Recursively searches through all files in a directory for a specific substring.
+    :param directory: The root directory to start the search.
+    :param substring: The substring to search for.
+    :return: A list of file paths where the substring is found.
     """
-    for dirpath, _, filenames in os.walk(directory_path):
-        for filename in filenames:
-            file_path = os.path.join(dirpath, filename)
-            find_substring_in_file(file_path, substring)
+    found_files = []
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            file_path = os.path.join(root, file)
+            if find_substring_in_file(file_path, substring):
+                found_files.append(file_path)
+    return found_files
 
 
 if __name__ == '__main__':
-    directory_to_search = 'path/to/search'  # Change this path to the directory you want to search
-    substring_to_find = 'מכרוזת'  # Substring to find
-    search_directory_for_substring(directory_to_search, substring_to_find)
+    # Example usage
+    search_path = '.'  # Change this to the directory you want to search
+    substring_to_find = 'your_substring_here'  # Change this to your target substring
+    found_files = search_directory_for_substring(search_path, substring_to_find)
+    print('Files containing the substring:', found_files)
